@@ -23,7 +23,7 @@ class Account(tk.Tk):
         label.pack(pady=10,padx=10)
         self.name= tk.Entry(self, fg="black", bg="white", width=40)
         self.name.pack(pady=8)
-        self.namelabel = tk.Label(self, text="Manager Options")
+        self.namelabel = tk.Label(self, text="Employee Options")
         self.namelabel.pack()
 
         ##left hand side button
@@ -69,6 +69,6 @@ class Account(tk.Tk):
 #app = ManagerAccount()
 #root.mainloop()
 
-start=Account()
-start.geometry("600x400")
-start.mainloop()
+#start=Account()
+#start.geometry("600x400")
+#start.mainloop()

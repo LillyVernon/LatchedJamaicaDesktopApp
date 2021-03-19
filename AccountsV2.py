@@ -1,18 +1,19 @@
 import tkinter as tk
+import random
 import mysql.connector 
 import tkinter.font as font
-from order import Order
-from database import connect
+from orderV2 import Order
+from database import connect, insertemployeeAccount, insertManagerAccount
 LARGE_FONT= ("Verdana", 12)
 
 class ManagerAccount(tk.Tk):
-    def __init__(self, *args, **kwargs):
+    def __init__(self,firstname,lastname, password, Username,accountid ,*args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         self.displayManager()
 
     def OrderGUI(self):
         self.destroy()
-        return Order().mainloop()
+        return Order()
 
 
     def signOut(self):
@@ -91,6 +92,31 @@ class CreateNewAccount(tk.Tk):
         self.CreateAddaccount()
 
 
+    def makeUser(self):
+        self.newfirstname = self.firstname.get()
+        self.newlastname = self.lastname.get()
+        self.newpassword = self.password.get()
+        self.newusername = self.name.get()
+        self.selection = self.select.get()
+        
+        if(self.selection == 'M'):
+            print('you selected '+ self.selection)
+            c = str(random.randint(1000,2000))
+            idcode = 'manacc' + c
+            print(idcode)
+            idcode2 = 'acc' + c +'-M'    
+            insertManagerAccount(self.newfirstname, self.newlastname,
+                                 idcode2,idcode,self.newpassword, self.newusername)
+
+
+        if(self.selection == 'E'):
+            print('you selected '+ self.selection)
+            idcode = 'acc' + str(random.randint(1000,2000))
+            insertemployeeAccount(self.newfirstname,self.newlastname, idcode,
+                              self.newpassword,self.newusername)
+
+        return self.destroy()
+
 
     def CreateAddaccount(self):
         
@@ -119,12 +145,27 @@ class CreateNewAccount(tk.Tk):
         self.passwordlabel.pack()
         self.password.pack(pady=8)
 
+        #self.var = tk.StringVar()
+
+        #self.select = tk.Label(self, text="Select Account type")
+        #self.select.pack()
+
+        #self.manageroption = tk.Radiobutton(self, text="Manager Account", variable=self.var, value='M')
+        #self.manageroption.pack(pady=8)
+
+        #self.employeeoption = tk.Radiobutton(self, text="Employee Account", variable=self.var, value='E')
+        #self.employeeoption.pack(pady=8)
+
+        self.selecttype = tk.Label(self, text="Enter 'M' for manager account or 'E' for employee account")
+        self.selecttype.pack()
+        self.select = tk.Entry(self, fg="black", bg="white", width=40)
+        self.select.pack(pady=8)
 
         self.button = tk.Button(self,text="Create Account",width=11,height=1,bg="white",
-                                fg="black")
+                                fg="black",command= self.makeUser)
         self.button.pack(pady=8)
 
-        self.geometry("600x400")
+        self.geometry("600x450")
         self.configure(bg='pink')
 
 
@@ -136,6 +177,31 @@ class CreateNewAccount(tk.Tk):
 #app = ManagerAccount()
 #root.mainloop()
 
-#start=ManagerAccount()
+#start=ManagerAccount("nakeem","mcnally", "123", "nally")
 #start.geometry("600x400")
 #start.mainloop()
+
+
+
+
+
+
+class Account:
+    
+    def __init__(self, firstname,lastname, password, Username):
+        self.firstname = firstname
+        self.lastname = lasttname
+        self.password = password
+        self.Username = Username
+        self.salary = 0
+        self.AccountID = 0
+
+    def displayuser(self):
+        return self.Username
+        
+
+    
+        
+ 
+
+#class Manager(Account):
