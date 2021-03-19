@@ -2,8 +2,17 @@ import mysql.connector
 from datetime import date, datetime, timedelta
 
 
+
+#database information
+
+hostName = "localhost"
+databaseUser = "root"
+databasePassword = ""
+databaseName = "latchjadb"
+
+
 def connect():
-    mydb = mysql.connector.connect(host= "localhost", user="root", passwd="", database="latchedjamaica")
+    mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
     if(mydb):
         print("connection sucessful")
     else:
@@ -19,8 +28,11 @@ def connect():
       
 
 
+
+
+
 def insertemployeeAccount(first_name, last_name, acctID, passwrd, username):
-    mydb = mysql.connector.connect(host= "localhost", user="root", passwd="",database="latchjadb")
+    mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
     if(mydb):
         print("connection made")
 
@@ -34,7 +46,7 @@ def insertemployeeAccount(first_name, last_name, acctID, passwrd, username):
     
     
 def insertManagerAccount(first_name, last_name, acctID,managerID,passwrd, username):
-    mydb = mysql.connector.connect(host= "localhost", user="root", passwd="",database="latchedjamaica")
+    mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
     if(mydb):
         print("connection made")
 
@@ -57,7 +69,7 @@ def insertAlert(name,alertID,alertdate,itemID,itemCount):
     # alert date should a list of integer where [year, month, day] and do not use this
     # function if there's nothing in the inventory or items tables
     
-    mydb = mysql.connector.connect(host= "localhost", user="root", passwd="",database="latchjadb")
+    mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
     if(mydb):
         print("connection made")
 
@@ -69,14 +81,180 @@ def insertAlert(name,alertID,alertdate,itemID,itemCount):
     mycursor.close()
     mydb.close()
 
+def getAllAlerts():
+    mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
+    if(mydb):
+        print("connection made")
+
+    mycursor = mydb.cursor()
+    query = ("SELECT * FROM alert")
+    mycursor.execute(query)
+    myresult = mycursor.fetchall()
+    print(myresult)
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
+
+def insertSalary(salaryID, accountID, salaryAmount):
+    mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
+    if(mydb):
+        print("connection made")
+
+    mycursor = mydb.cursor()
+    addSalary = ("INSERT INTO salary(salaryID,accountID,salaryAmount) VALUES (%s, %s, %s)")
+    salarydata = (salaryID,accountID,salaryAmount)
+    mycursor.execute(addSalary, salarydata)
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
+    
+
+def getSalaryByAccountID(accountID):
+    mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
+    if(mydb):
+        print("connection made")
+
+    mycursor = mydb.cursor()
+    query = ("SELECT salaryID,accountID,salaryAmount FROM salary WHERE accountID = %s")
+    mycursor.execute(query, (accountID,))
+    myresult = mycursor.fetchall()
+    print(myresult)
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
+    
+
+
+def getItemByName(itemName):
+    mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
+    if(mydb):
+        print("connection made")
+
+    mycursor = mydb.cursor()
+    query = ("SELECT * FROM item WHERE itemname = %s")
+    mycursor.execute(query, (itemName,))
+    myresult = mycursor.fetchall()
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
+    return myresult
+
+    
+def getAllItems():
+    mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
+    if(mydb):
+        print("connection made")
+
+    mycursor = mydb.cursor()
+    query = ("SELECT * FROM item")
+    mycursor.execute(query)
+    myresult = mycursor.fetchall()
+    print(myresult)
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
+
+
+def deleteItemByName(itemName):
+    mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
+    if(mydb):
+        print("connection made")
+
+    mycursor = mydb.cursor()
+    query = ("DELETE FROM item WHERE itemname = %s")
+    mycursor.execute(query, (itemName,))
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
+   
+
+
+def insertItem(itemname, itemID,itemprice,itemcount, itemdescription):
+
+    mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
+    if(mydb):
+        print("connection made")
+
+    mycursor = mydb.cursor()
+    addItem = ("INSERT INTO item(itemname, itemID,itemprice,itemcount, itemdescription) VALUES (%s, %s, %s, %s, %s)")
+    itemdata = (itemname, itemID,itemprice,itemcount, itemdescription)
+    mycursor.execute(addItem, itemdata)
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
+
+def updateItemByName(oldname, newitemname, newitemID,newitemprice,newitemcount, newitemdescription):
+    mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
+    if(mydb):
+        print("connection made")
+
+    mycursor = mydb.cursor()
+    addItem = ("UPDATE item SET itemname = %s, itemID = %s,itemprice = %s ,itemcount = %s, itemdescription = %s WHERE itemname = %s")
+    itemdata = (newitemname, newitemID,newitemprice,newitemcount, newitemdescription, oldname)
+    mycursor.execute(addItem, itemdata)
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
 
 
 
 
+def updateItemPriceByName(itemname, newitemprice):
 
+    mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
+    if(mydb):
+        print("connection made")
+
+    mycursor = mydb.cursor()
+    addItem = ("UPDATE item SET itemprice = %s WHERE itemname = %s")
+    itemdata = (newitemprice, itemname)
+    mycursor.execute(addItem, itemdata)
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
+    
+
+def updateItemCountByName(itemname, newitemcount):
+
+    mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
+    if(mydb):
+        print("connection made")
+
+    mycursor = mydb.cursor()
+    addItem = ("UPDATE item SET itemcount = %s WHERE itemname = %s")
+    itemdata = (newitemcount, itemname)
+    mycursor.execute(addItem, itemdata)
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
+
+
+def reduceItemCountByName(itemname, reductionAmount):
+    #this is used when an item is ordered and a specific quantity is requested
+    # so the itemcount should be reduced by that value in order to update the inventory
+
+    mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
+    if(mydb):
+        print("connection made")
+
+    mycursor = mydb.cursor()
+    query = ("SELECT itemcount FROM item WHERE itemname = %s")
+    mycursor.execute(query,(itemname,))
+    myresult = mycursor.fetchall()
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
+    updateItemCountByName(itemname,myresult[0][0]-reductionAmount)
+    
+   
+
+    
+
+    
+    
 
 def buildTables():
-    mydb = mysql.connector.connect(host= "localhost", user="root", passwd="",database="latchedjamaica")
+    mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
     if(mydb):
         print("connection made")
 
@@ -107,5 +285,4 @@ def buildTables():
 
     mycursor.close()
     mydb.close()
-#buildTables()
-#nsertManagerAccount("ad", "min", 101,202,"root", "admin")
+
