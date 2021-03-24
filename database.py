@@ -1,4 +1,5 @@
 import mysql.connector
+import random
 from datetime import date, datetime, timedelta
 
 
@@ -10,6 +11,10 @@ databaseUser = "root"
 databasePassword = ""
 databaseName = "latchjadb"
 
+
+# latchja info
+
+FlatSalaryRate = 25000
 
 def connect():
     mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
@@ -65,17 +70,15 @@ def insertManagerAccount(first_name, last_name, acctID,managerID,passwrd, userna
 
 
 
-def insertAlert(name,alertID,alertdate,itemID,itemCount):
-    # alert date should a list of integer where [year, month, day] and do not use this
-    # function if there's nothing in the inventory or items tables
-    
+def insertAlert(name,alertID,itemID,itemCount):
+    thedate =  datetime.today()
     mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
     if(mydb):
         print("connection made")
 
     mycursor = mydb.cursor()
     addAlert = ("INSERT INTO alert(name,alertID,alertdate,itemID,itemCount) VALUES (%s, %s, %s, %s, %s)")
-    alertdata = (name,alertID,date(alertdate[0],alertdate[1],alertdate[2]),itemID,itemCount)
+    alertdata = (name,alertID,thedate,itemID,itemCount)
     mycursor.execute(addAlert, alertdata)
     mydb.commit()
     mycursor.close()
@@ -96,13 +99,14 @@ def getAllAlerts():
     mydb.close()
 
 def insertSalary(salaryID, accountID, salaryAmount):
+    thedate =  datetime.today()
     mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
     if(mydb):
         print("connection made")
 
     mycursor = mydb.cursor()
-    addSalary = ("INSERT INTO salary(salaryID,accountID,salaryAmount) VALUES (%s, %s, %s)")
-    salarydata = (salaryID,accountID,salaryAmount)
+    addSalary = ("INSERT INTO salary(salaryID,accountID,salaryAmount,salaryDate) VALUES (%s, %s, %s, %s)")
+    salarydata = (salaryID,accountID,salaryAmount,thedate)
     mycursor.execute(addSalary, salarydata)
     mydb.commit()
     mycursor.close()
@@ -115,7 +119,7 @@ def getSalaryByAccountID(accountID):
         print("connection made")
 
     mycursor = mydb.cursor()
-    query = ("SELECT salaryID,accountID,salaryAmount FROM salary WHERE accountID = %s")
+    query = ("SELECT * FROM salary WHERE accountID = %s")
     mycursor.execute(query, (accountID,))
     myresult = mycursor.fetchall()
     print(myresult)
@@ -123,7 +127,19 @@ def getSalaryByAccountID(accountID):
     mycursor.close()
     mydb.close()
     
+def getSalary():
+    mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
+    if(mydb):
+        print("connection made")
 
+    mycursor = mydb.cursor()
+    query = ("SELECT * FROM salary")
+    mycursor.execute(query)
+    myresult = mycursor.fetchall()
+    print(myresult)
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
 
 def getItemByName(itemName):
     mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
@@ -247,11 +263,72 @@ def reduceItemCountByName(itemname, reductionAmount):
     updateItemCountByName(itemname,myresult[0][0]-reductionAmount)
     
    
+def insertOrder(name, orderID, totalprice, discount, accountID, itemname, orderedItemCount):
+    thedate =  datetime.today()
+    mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
+    if(mydb):
+        print("connection made")
 
+    mycursor = mydb.cursor()
+    addOrder = ("INSERT INTO ordertable(name, orderID, totalprice, discount, accountID, orderdate) VALUES (%s, %s, %s, %s, %s, %s)")
+    orderdata = (name, orderID, totalprice, discount, accountID, thedate)
+    mycursor.execute(addOrder, orderdata)
+
+    addOrderlist = ("INSERT INTO orderlist(orderID, orderlistdate,itemname,orderedItemCount) VALUES (%s, %s, %s,%s)")
+    orderlistdata = (orderID,thedate,itemname,orderedItemCount)
+    mycursor.execute(addOrderlist, orderlistdata)
+    
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
+    reduceItemCountByName(itemname, orderedItemCount)
+    
+#insertOrder('Ms Davis','order1564',750,0,'acc1001','high class watch',4)
+
+def test():
+    todaysdate = datetime.today()
+    # date in yyyy/mm/dd format
+    days = timedelta(5)
+    limitdate = todaysdate - days
+    print(limitdate)
+
+def salaryPayment():
+    mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
+    if(mydb):
+        print("connection made")
+
+    mycursor = mydb.cursor()
+    query = ("SELECT accountID FROM account")
+    mycursor.execute(query)
+    myresult = mycursor.fetchall()
+    todaysdate = datetime.today()
+    
+    days = timedelta(5)
+    limitdate = todaysdate - days
+   
+    for x in myresult:
+        print(x[0])
+        query = ("SELECT orderID FROM ordertable WHERE accountID = %s and orderdate > %s")
+        mycursor.execute(query,(x[0],limitdate,))
+        data = mycursor.fetchall()
+        salesMade = len(data) * 500
+        pay = salesMade + FlatSalaryRate
+        #pay salary
+        salaryID = 'salary' + str(random.randint(1000,2000))
+        insertSalary(salaryID, x[0], pay)
+        
+
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
+    
+    
+    
+    
     
 
-    
-    
+
+
 
 def buildTables():
     mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
@@ -264,8 +341,8 @@ def buildTables():
     tables['managerAccount'] = ("Create table managerAccount(firstname varchar(30), lastname varchar(30), accountID varchar(30),managerAccountID varchar(30),password varchar(30), username varchar(30), primary key(ManagerAccountID), foreign key(accountID) references account(accountID)  on delete cascade)")
     tables['ordertable'] = ("Create table ordertable(name varchar(30), orderID varchar(30), totalprice FLOAT(50), discount FLOAT(50), accountID varchar(30),orderdate DATE, primary key(orderID),foreign key(accountID) references account(accountID)  on delete cascade)")
     tables['item'] = ("Create table item(itemname varchar(50), itemID varchar(30),itemprice float(50),itemcount int, itemdescription varchar(50), primary key(itemID))")
-    tables['orderlist'] = ("Create table orderlist(orderID varchar(30), orderlistdate date,itemID varchar(30), primary key(orderID), foreign key(orderID) references ordertable(orderID)  on delete cascade,foreign key(itemID) references item(itemID)  on delete cascade)")
-    tables['salary'] = ("Create table salary(salaryID varchar(30), accountID varchar(30),salaryAmount int, primary key(salaryID), foreign key(accountID) references account(accountID) on delete cascade)")
+    tables['orderlist'] = ("Create table orderlist(orderID varchar(30), orderlistdate date,itemname varchar(50),orderedItemCount int, primary key(orderID), foreign key(orderID) references ordertable(orderID)  on delete cascade)")
+    tables['salary'] = ("Create table salary(salaryID varchar(30), accountID varchar(30),salaryAmount int,salaryDate DATE, primary key(salaryID), foreign key(accountID) references account(accountID) on delete cascade)")
     tables['inventory'] = ("Create table inventory(inventoryID varchar(30), itemID varchar(30), quantity int, name varchar(30),primary key(inventoryID), foreign key(itemID) references item(itemID)  on delete cascade)")
     tables['alert'] = ("Create table alert(name varchar(30), alertID varchar(30),alertdate date, itemID varchar(30), itemCount int, primary key(alertID), foreign key(itemID) references item(itemID)  on delete cascade )")
     tables['supplier'] = ("Create table supplier(suppliername varchar(30), supplierID varchar(30),supplierlocation varchar(50), supplieritem varchar(30), itemID varchar(30), primary key(supplierID), foreign key(itemID) references item(itemID)  on delete cascade)")
