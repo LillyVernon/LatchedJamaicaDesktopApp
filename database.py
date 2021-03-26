@@ -126,6 +126,7 @@ def getSalaryByAccountID(accountID):
     mydb.commit()
     mycursor.close()
     mydb.close()
+    return myresult
     
 def getSalary():
     mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
@@ -136,10 +137,10 @@ def getSalary():
     query = ("SELECT * FROM salary")
     mycursor.execute(query)
     myresult = mycursor.fetchall()
-    print(myresult)
     mydb.commit()
     mycursor.close()
     mydb.close()
+    return myresult
 
 def getItemByName(itemName):
     mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
@@ -198,6 +199,9 @@ def insertItem(itemname, itemID,itemprice,itemcount, itemdescription):
     mydb.commit()
     mycursor.close()
     mydb.close()
+
+
+
 
 def updateItemByName(oldname, newitemname, newitemID,newitemprice,newitemcount, newitemdescription):
     mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
@@ -285,12 +289,39 @@ def insertOrder(name, orderID, totalprice, discount, accountID, itemname, ordere
     
 #insertOrder('Ms Davis','order1564',750,0,'acc1001','high class watch',4)
 
-def test():
-    todaysdate = datetime.today()
-    # date in yyyy/mm/dd format
-    days = timedelta(5)
-    limitdate = todaysdate - days
-    print(limitdate)
+
+def getOrders():
+    mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
+    if(mydb):
+        print("connection made")
+
+    mycursor = mydb.cursor()
+    query = ("SELECT * FROM ordertable")
+    mycursor.execute(query)
+    myresult = mycursor.fetchall()
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
+    return myresult
+
+
+def getOrderByAccountID(accountID):
+    mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
+    if(mydb):
+        print("connection made")
+
+    mycursor = mydb.cursor()
+    query = ("SELECT * FROM ordertable WHERE accountID = %s")
+    mycursor.execute(query, (accountID,))
+    myresult = mycursor.fetchall()
+    print(myresult)
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
+    return myresult
+
+
+
 
 def salaryPayment():
     mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
