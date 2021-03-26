@@ -79,7 +79,7 @@ class ViewAllOrdersMade(tk.Tk):
     def ViewOrderList(self):
        
         mydata = dbmanager.getOrderByAccountID(self.myaccountid)
-        mydata.insert(0,('Order Name', 'Order ID','Cost', 'Discount', 'Account ID', 'Order Date'))
+        mydata.insert(0,('Order ID','Cost', 'Discount', 'Account ID', 'Order Date'))
         total_rows = len(mydata)
         total_columns = len(mydata[0])
         

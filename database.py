@@ -267,15 +267,15 @@ def reduceItemCountByName(itemname, reductionAmount):
     updateItemCountByName(itemname,myresult[0][0]-reductionAmount)
     
    
-def insertOrder(name, orderID, totalprice, discount, accountID, itemname, orderedItemCount):
+def insertOrder(orderID, totalprice, discount, accountID, itemname, orderedItemCount):
     thedate =  datetime.today()
     mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
     if(mydb):
         print("connection made")
 
     mycursor = mydb.cursor()
-    addOrder = ("INSERT INTO ordertable(name, orderID, totalprice, discount, accountID, orderdate) VALUES (%s, %s, %s, %s, %s, %s)")
-    orderdata = (name, orderID, totalprice, discount, accountID, thedate)
+    addOrder = ("INSERT INTO ordertable(orderID, totalprice, discount, accountID, orderdate) VALUES (%s, %s, %s, %s, %s)")
+    orderdata = (orderID, totalprice, discount, accountID, thedate)
     mycursor.execute(addOrder, orderdata)
 
     addOrderlist = ("INSERT INTO orderlist(orderID, orderlistdate,itemname,orderedItemCount) VALUES (%s, %s, %s,%s)")
@@ -287,7 +287,7 @@ def insertOrder(name, orderID, totalprice, discount, accountID, itemname, ordere
     mydb.close()
     reduceItemCountByName(itemname, orderedItemCount)
     
-#insertOrder('Ms Davis','order1564',750,0,'acc1001','high class watch',4)
+#insertOrder('order1564',750,0,'acc1001','high class watch',4)
 
 
 def getOrders():
@@ -370,7 +370,7 @@ def buildTables():
     tables = {}
     tables['account'] = ("Create table account(firstname varchar(30), lastname varchar(30), accountID varchar(30), password varchar(30), username varchar(30), primary key(accountID))")
     tables['managerAccount'] = ("Create table managerAccount(firstname varchar(30), lastname varchar(30), accountID varchar(30),managerAccountID varchar(30),password varchar(30), username varchar(30), primary key(ManagerAccountID), foreign key(accountID) references account(accountID)  on delete cascade)")
-    tables['ordertable'] = ("Create table ordertable(name varchar(30), orderID varchar(30), totalprice FLOAT(50), discount FLOAT(50), accountID varchar(30),orderdate DATE, primary key(orderID),foreign key(accountID) references account(accountID)  on delete cascade)")
+    tables['ordertable'] = ("Create table ordertable(orderID varchar(30), totalprice FLOAT(50), discount FLOAT(50), accountID varchar(30),orderdate DATE, primary key(orderID),foreign key(accountID) references account(accountID)  on delete cascade)")
     tables['item'] = ("Create table item(itemname varchar(50), itemID varchar(30),itemprice float(50),itemcount int, itemdescription varchar(50), primary key(itemID))")
     tables['orderlist'] = ("Create table orderlist(orderID varchar(30), orderlistdate date,itemname varchar(50),orderedItemCount int, primary key(orderID), foreign key(orderID) references ordertable(orderID)  on delete cascade)")
     tables['salary'] = ("Create table salary(salaryID varchar(30), accountID varchar(30),salaryAmount int,salaryDate DATE, primary key(salaryID), foreign key(accountID) references account(accountID) on delete cascade)")

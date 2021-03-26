@@ -6,7 +6,7 @@ import mysql.connector
 import tkinter.font as font
 from datetime import date, datetime, timedelta
 from calendar import day_name
-from orderV2 import Order
+from order import Order
 from database import connect, insertemployeeAccount, insertManagerAccount, salaryPayment, getSalary, getOrders  
 LARGE_FONT= ("Verdana", 12)
 
@@ -17,8 +17,7 @@ class ManagerAccount(tk.Tk):
         self.displayManager()
 
     def OrderGUI(self):
-        self.destroy()
-        return Order()
+        return Order().mainloop()
 
     def ViewPayments(self):
         return ViewSalaryPaid().mainloop()
@@ -146,7 +145,7 @@ class ViewAllOrdersMade(tk.Tk):
     def ViewOrderList(self):
        
         mydata = getOrders()
-        mydata.insert(0,('Order Name', 'Order ID','Cost', 'Discount', 'Account ID', 'Order Date'))
+        mydata.insert(0,('Order ID','Cost', 'Discount', 'Account ID', 'Order Date'))
         total_rows = len(mydata)
         total_columns = len(mydata[0])
         
@@ -261,27 +260,14 @@ class CreateNewAccount(tk.Tk):
 #app = ManagerAccount()
 #root.mainloop()
 
-#start=ManagerAccount("nakeem","mcnally", "123", "nally","acc1202")
-#start.geometry("600x400")
-#start.mainloop()
+start=ManagerAccount("nakeem","mcnally", "123", "nally","acc1202")
+start.geometry("600x400")
+start.mainloop()
 
 
 
 
 
-
-class Account:
-    
-    def __init__(self, firstname,lastname, password, Username):
-        self.firstname = firstname
-        self.lastname = lasttname
-        self.password = password
-        self.Username = Username
-        self.salary = 0
-        self.AccountID = 0
-
-    def displayuser(self):
-        return self.Username
         
 
     
