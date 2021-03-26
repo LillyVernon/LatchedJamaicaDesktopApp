@@ -3,6 +3,7 @@ import mysql.connector
 import tkinter.font as font
 from database import connect 
 from AccountsV2 import ManagerAccount
+from employeeAccount import Account
 
 LARGE_FONT= ("Verdana", 12)
 
@@ -42,7 +43,6 @@ class LoginPage(tk.Tk):
         command=self.submit
          )
         self.button.pack(pady=8)  
-        self.configure(bg='pink')
 
     def login(self, username,userpassword):
         if self.userpassword and self.username:
@@ -51,7 +51,7 @@ class LoginPage(tk.Tk):
             print(info[1])
             con=connect()
             mycursor=connect()
-            query = "SELECT username,password FROM account WHERE username = %s AND password = %s"
+            query = "SELECT firstname,lastname,username,password,accountID FROM account WHERE username = %s AND password = %s"
             mycursor[1].execute(query, info,)
             myresult = mycursor[1].fetchall()
             print(myresult)
@@ -63,7 +63,13 @@ class LoginPage(tk.Tk):
                 self.button.pack_forget()
                 log.destroy() #closes the window
                 
-                return ManagerAccount().mainloop()
+                if '-M' in myresult[0][4]:
+                    mywindow = ManagerAccount(myresult[0][0],myresult[0][1], myresult[0][3],myresult[0][2],myresult[0][4]).mainloop()
+                else:
+                    mywindow = Account(myresult[0][0],myresult[0][1], myresult[0][3],myresult[0][2],myresult[0][4]).mainloop()
+                
+                
+                return mywindow
             else: 
                 return "incorrect Username or Password Entered"  
 
@@ -82,6 +88,7 @@ class LoginPage(tk.Tk):
 
 
 log=LoginPage()
+log.configure(bg='pink')
 log.geometry("600x400")
 log.mainloop()
 
