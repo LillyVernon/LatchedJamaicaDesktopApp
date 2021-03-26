@@ -40,7 +40,7 @@ class ManagerAccount(tk.Tk):
         self.namelabel.pack()
 
         ##left hand side button
-        self.createOrder = tk.Button(self,text="Creat Order",
+        self.createOrder = tk.Button(self,text="Create Order",
                                 width=10,height=1,bg="white",fg="black"
                                 ,command=self.OrderGUI)
 
@@ -92,7 +92,7 @@ class ManagerAccount(tk.Tk):
     def paySalary(self):
         thedate =  datetime.today()
 
-        if day_name[thedate.weekday()] == 'Wednesday':
+        if day_name[thedate.weekday()] == 'Friday':
             salaryPayment()
             tkinter.messagebox.showinfo('LatchedJa : Salary Paid','Salary payments have been made. Click the View Salary option to see the payments')
             print('Today is Friday')
@@ -260,9 +260,9 @@ class CreateNewAccount(tk.Tk):
 #app = ManagerAccount()
 #root.mainloop()
 
-start=ManagerAccount("nakeem","mcnally", "123", "nally","acc1202")
-start.geometry("600x400")
-start.mainloop()
+#start=ManagerAccount("nakeem","mcnally", "123", "nally","acc1202")
+#start.geometry("600x400")
+#start.mainloop()
 
 
 

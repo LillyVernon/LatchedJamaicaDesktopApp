@@ -13,7 +13,6 @@ class Account(tk.Tk):
         self.displayManager()
 
     def OrderGUI(self):
-        self.destroy()
         return Order().mainloop()
     
     def ViewPayments(self):
@@ -35,7 +34,7 @@ class Account(tk.Tk):
         self.namelabel.pack()
 
         ##left hand side button
-        self.createOrder = tk.Button(self,text="Creat Order",
+        self.createOrder = tk.Button(self,text="Create Order",
                                 width=10,height=1,bg="white",fg="black"
                                 ,command=self.OrderGUI)
 
