@@ -7,8 +7,9 @@ import tkinter.font as font
 from datetime import date, datetime, timedelta
 from calendar import day_name
 from order import Order
-from database import connect, insertemployeeAccount, insertManagerAccount, salaryPayment, getSalary, getOrders  
+from database import connect,generateReport,getAllItems,insertemployeeAccount, insertManagerAccount, salaryPayment, getSalary, getOrders  
 LARGE_FONT= ("Verdana", 12)
+
 
 class ManagerAccount(tk.Tk):
     def __init__(self,firstname,lastname, password, Username,accountid ,*args, **kwargs):
@@ -20,16 +21,21 @@ class ManagerAccount(tk.Tk):
         return Order().mainloop()
 
     def ViewPayments(self):
-        return ViewSalaryPaid().mainloop()
+        return Salary().mainloop()
 
     def ViewALLorders(self):
-        return ViewAllOrdersMade().mainloop()
+        return OrderList().mainloop()
 
     def signOut(self):
         return self.destroy()
 
+
+    def ViewReport(self):
+        return Report().mainloop()
+
+
     def makeAccount(self):
-        return CreateNewAccount().mainloop()    
+        return NewAccount().mainloop()    
 
     def displayManager(self):
         label = tk.Label(self, text="Latched Jamaica", font=LARGE_FONT)
@@ -51,7 +57,7 @@ class ManagerAccount(tk.Tk):
         self.viewSalary.place(y=200,x=100)
 
         self.viewreport = tk.Button(self, text="View Report",
-                                    width=10,height=1,bg="white",fg="black")
+                                    width=10,height=1,bg="white",fg="black", command = self.ViewReport)
         self.viewreport.place(y=250,x=100)
 
 
@@ -102,7 +108,7 @@ class ManagerAccount(tk.Tk):
             tkinter.messagebox.showinfo('LatchedJa : Salary Warning','Salary payments can only be made on Fridays')    
             
             
-class ViewSalaryPaid(tk.Tk):
+class Salary(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         self.ViewSalaryList()
@@ -135,7 +141,7 @@ class ViewSalaryPaid(tk.Tk):
 
 
 
-class ViewAllOrdersMade(tk.Tk):
+class OrderList(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         self.ViewOrderList()
@@ -169,7 +175,7 @@ class ViewAllOrdersMade(tk.Tk):
 
 
 
-class CreateNewAccount(tk.Tk):
+class NewAccount(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         self.CreateAddaccount()
@@ -250,6 +256,74 @@ class CreateNewAccount(tk.Tk):
 
         self.geometry("600x450")
         self.configure(bg='pink')
+
+
+
+
+
+
+
+class Report(tk.Tk):
+    def __init__(self, *args, **kwargs):
+        tk.Tk.__init__(self, *args, **kwargs)
+        self.ViewReport()
+
+
+
+    def ViewReport(self):
+       
+        myitemdata = getAllItems()
+        myorderData = generateReport()
+        data = []
+        count = 0
+        for x in myitemdata:
+            data.append("ItemID: " + x[1]+" --Item Name: "+ x[0]+ " --Item Price: "+str(x[2]) +" --Quantity (in Stock): "+ str(x[3])+" --Item Description: "+x[4])
+            count = count + 1
+         
+
+
+
+        self.tablelabel = tk.Label(self, text="Latched Jamaica Report")
+        self.tablelabel.pack()
+        
+        # code for creating table
+        #for i in range(total_rows):
+        #    for j in range(total_columns):
+                  
+        #        self.e = tk.Entry(self, width=20, fg='blue',
+        #                       font=('Arial',12,'bold'))
+                  
+        #        self.e.grid(row=i, column=j)
+        #        self.e.insert(END, myorderData[i][j])
+
+
+
+        self.data = tk.Text(self,height = 200, width = 500)
+        self.data.pack()
+        self.data.insert(tk.END, 'The Order Summary' + '\n'+'\n')
+
+        for x in myorderData[0]:
+            self.data.insert(tk.END, x + '\n')
+            #self.data.insert(tk.END, myorderData[0][1])
+
+        self.data.insert(tk.END, ' '+'\n')
+        
+        self.data.insert(tk.END, 'The Total Orders: '+ str(myorderData[2]) + '\n')
+        self.data.insert(tk.END, 'The Total Revenue: '+ str(myorderData[1]) + '\n'+'\n')
+
+        self.data.insert(tk.END, 'Inventory Summary'+'\n'+'\n')
+
+        for x in data:
+            self.data.insert(tk.END, x + '\n')
+
+        self.data.insert(tk.END, ' '+'\n')
+        self.data.insert(tk.END, 'The Total items: '+ str(count) + '\n') 
+        self.data.configure(state='disabled')
+        self.configure(bg='pink')
+        self.geometry("1200x400")
+        self.title("Latched Jamaica: Report")
+
+
 
 
 

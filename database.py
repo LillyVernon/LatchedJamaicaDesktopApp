@@ -166,10 +166,11 @@ def getAllItems():
     query = ("SELECT * FROM item")
     mycursor.execute(query)
     myresult = mycursor.fetchall()
-    print(myresult)
+    #print(myresult)
     mydb.commit()
     mycursor.close()
     mydb.close()
+    return myresult
 
 
 def deleteItemByName(itemName):
@@ -355,6 +356,34 @@ def salaryPayment():
     
     
     
+def generateReport():
+    mydb = mysql.connector.connect(host= hostName, user=databaseUser, passwd=databasePassword, database=databaseName)
+    if(mydb):
+        print("connection made")
+
+    mycursor = mydb.cursor()
+
+    mycursor = mydb.cursor()
+    query = ("SELECT * FROM ordertable JOIN orderlist ON ordertable.orderID = orderlist.orderID")
+    mycursor.execute(query)
+    myresult = mycursor.fetchall()
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
+
+    data = []
+    total = 0
+    count = 0
+
+    for x in myresult:
+        #data.append([x[0],x[1] - x[2], x[3],x[6],x[7],x[8]])
+        data.append("Order: " + x[0]+" --Made by: "+ x[3]+ " --Order Date: "+x[6].strftime("%d %B, %Y") +" --Cost (with discount): "+ str(x[1]-x[2])+" --Item ordered: "+x[7]+" --Quantity: "+ str(x[8]))
+        total = total + (x[1]-x[2])
+        count = count + 1 
+    return [data,total,count]
+    
+        
+
     
     
 
