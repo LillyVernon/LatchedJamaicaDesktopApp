@@ -18,7 +18,7 @@ class ManagerAccount(tk.Tk):
         self.displayManager()
 
     def OrderGUI(self):
-        return Order().mainloop()
+        return Order(self.accountid).mainloop()
 
     def ViewPayments(self):
         return Salary().mainloop()

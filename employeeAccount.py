@@ -13,7 +13,8 @@ class Account(tk.Tk):
         self.displayManager()
 
     def OrderGUI(self):
-        return Order().mainloop()
+        self.destroy()
+        return Order(self.accountid).mainloop()
     
     def ViewPayments(self):
         return ViewSalaryPaid(self.accountid).mainloop()
