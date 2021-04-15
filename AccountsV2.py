@@ -21,10 +21,10 @@ class ManagerAccount(tk.Tk):
         return Order(self.accountid).mainloop()
 
     def ViewPayments(self):
-        return Salary().mainloop()
+        return Salary(self.accountid).mainloop()
 
     def ViewALLorders(self):
-        return OrderList().mainloop()
+        return OrderList(self.accountid).mainloop()
 
     def signOut(self):
         return self.destroy()
@@ -109,7 +109,7 @@ class ManagerAccount(tk.Tk):
             
             
 class Salary(tk.Tk):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, myaccountid,*args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         self.ViewSalaryList()
 
@@ -142,7 +142,7 @@ class Salary(tk.Tk):
 
 
 class OrderList(tk.Tk):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, myaccountid,*args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         self.ViewOrderList()
 

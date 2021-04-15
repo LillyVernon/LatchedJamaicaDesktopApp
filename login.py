@@ -3,7 +3,7 @@ import mysql.connector
 import tkinter.font as font
 from database import connect 
 from AccountsV2 import ManagerAccount
-from employeeAccount import Account
+from employeeAccount import EmployeeAccount
 
 LARGE_FONT= ("Verdana", 12)
 
@@ -66,7 +66,7 @@ class LoginPage(tk.Tk):
                 if '-M' in myresult[0][4]:
                     mywindow = ManagerAccount(myresult[0][0],myresult[0][1], myresult[0][3],myresult[0][2],myresult[0][4]).mainloop()
                 else:
-                    mywindow = Account(myresult[0][0],myresult[0][1], myresult[0][3],myresult[0][2],myresult[0][4]).mainloop()
+                    mywindow = EmployeeAccount(myresult[0][0],myresult[0][1], myresult[0][3],myresult[0][2],myresult[0][4]).mainloop()
                 
                 
                 return mywindow

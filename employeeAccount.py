@@ -6,21 +6,20 @@ from order import Order
 import database as dbmanager
 LARGE_FONT= ("Verdana", 12)
 
-class Account(tk.Tk):
+class EmployeeAccount(tk.Tk):
     def __init__(self,firstname,lastname, password, Username,accountid, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         self.accountid = accountid
         self.displayManager()
 
     def OrderGUI(self):
-        self.destroy()
         return Order(self.accountid).mainloop()
     
     def ViewPayments(self):
-        return ViewSalaryPaid(self.accountid).mainloop()
+        return Salary(self.accountid).mainloop()
 
     def Viewmyorders(self):
-        return ViewAllOrdersMade(self.accountid).mainloop()
+        return OrderList(self.accountid).mainloop()
     
     def signOut(self):
         return self.destroy()
@@ -68,7 +67,7 @@ class Account(tk.Tk):
         
         
 
-class ViewAllOrdersMade(tk.Tk):
+class OrderList(tk.Tk):
     def __init__(self,myaccountid, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         self.myaccountid = myaccountid
@@ -105,7 +104,7 @@ class ViewAllOrdersMade(tk.Tk):
 
 
             
-class ViewSalaryPaid(tk.Tk):
+class Salary(tk.Tk):
     def __init__(self,myaccountid, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         self.myaccountid = myaccountid
