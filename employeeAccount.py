@@ -10,6 +10,10 @@ class EmployeeAccount(tk.Tk):
     def __init__(self,firstname,lastname, password, Username,accountid, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         self.accountid = accountid
+        self.firstname = firstname
+        self.lastname = lastname
+        self.password = password
+        self.Username = Username
         self.displayManager()
 
     def OrderGUI(self):
