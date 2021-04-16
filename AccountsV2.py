@@ -20,6 +20,7 @@ class ManagerAccount(tk.Tk):
         self.accountid = accountid
         self.Username = Username
         self.displayManager()
+        Alert().ViewAlert()
         
 
     def OrderGUI(self):
@@ -501,23 +502,38 @@ class Inventory(tk.Tk):
 
 
 
+class Alert():
+   
+    def ViewAlert(self):
+
+        mydata = getAllItems()
+        lowalertlist =[]
+        highalertlist =[]
+        lowstr = ''
+        highstr = ''
+
+        for i in mydata:
+            if  i[3] <5:
+                lowalertlist.append(i[0]+'-'+i[1])
+            elif i[3]>30:
+                highalertlist.append(i[0]+'-'+i[1])
 
 
+        print(lowalertlist)
+        print(highalertlist)
+        for  x in lowalertlist:
+            lowstr = lowstr +','+x
 
+            
+        for  x in highalertlist:
+            highstr = highstr +','+x    
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+         
+        lowstr = lowstr[1:]
+        highstr = highstr[1:]
+        
+        tkinter.messagebox.showinfo('LatchedJa : Inventory Alerts','The items running LOW in stock include: '+ lowstr+ '. The items running HIGH in stock include: '+highstr)
+        
         
 
 

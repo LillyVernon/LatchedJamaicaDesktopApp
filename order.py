@@ -81,7 +81,7 @@ class Order(tk.Tk):
         global itemlist
         global discount
         mycursor=connect()
-        query = "SELECT orderID FROM orderlist ORDER BY orderID DESC LIMIT 1"
+        query = "SELECT orderID FROM ordertable ORDER BY orderID DESC LIMIT 1"
         mycursor[1].execute(query)
         myresult = list((mycursor[1].fetchall())[0])[0][5:]
         print(myresult)
@@ -113,6 +113,7 @@ class Order(tk.Tk):
         yitem=yitem+30
         
     def deleteorder(self):
+        global accid
         self.destroy()
         global itemlist
         global xitem
@@ -120,7 +121,7 @@ class Order(tk.Tk):
         xitem=400
         yitem=30
         itemlist.clear()
-        Order()
+        Order(accid)
 
 
     def additems(self, name, iid):
@@ -138,7 +139,7 @@ class Order(tk.Tk):
 
     def displayitems(self):
        # self.latched = tk.Label(self, text=" ",fg="black").pack()
-        self.newwin = Toplevel(Tk())
+        self.newwin = Toplevel()
         self.newwin.title('Add items')
         self.newwin.geometry("600x400") 
         self.newwin.configure(bg='pink')
@@ -219,7 +220,7 @@ class Order(tk.Tk):
             print("item in list")
             for item in itemlist:
                 print(item)
-                if int(item[0])==int(iid):
+                if item[0]==iid:
                     item[5]=item[5]+1
                     pri=item[3]
                     item[4]=pri*item[5]
