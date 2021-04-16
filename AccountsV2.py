@@ -298,39 +298,6 @@ class NewAccount(tk.Tk):
 
 
 
-class Item(tk.Tk):
-    def __init__(self,itemname,*args, **kwargs):
-        tk.Tk.__init__(self, *args, **kwargs)
-
-        self.itemname = itemname
-
-
-    def getiItemdetails(self):
-
-
-        mydata = getItemByName(self.itemname)
-        mydata.insert(0,('Item Name','Item ID', 'Item Price', 'Item Count', 'Item Description'))
-        total_rows = len(mydata)
-        total_columns = len(mydata[0])
-        
-        # code for creating table
-        for i in range(total_rows):
-            for j in range(total_columns):
-                  
-                self.e = tk.Entry(self, width=20, fg='blue',
-                               font=('Arial',12,'bold'))
-                  
-                self.e.grid(row=i, column=j)
-                self.e.insert(END, mydata[i][j])
-
-
-        
-        
-        self.configure(bg='pink')
-        self.title("Latched Jamaica: View Inventory Item")
-        
-
-
 
 
 class Inventory(tk.Tk):
